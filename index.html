@@ -1,0 +1,217 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+</head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<!-- IZITOAST v11.3.0 -->
+<!-- #http://izitoast.marcelodolce.com/ -->
+<link rel="stylesheet" href="https://unpkg.com/izitoast/dist/css/iziToast.min.css"/>
+<script type="text/javascript" src="https://unpkg.com/izitoast/dist/js/iziToast.min.js"></script>
+
+<title>coinTossDesign</title>
+<body>
+    <h1>コイントス</h1>
+    <label  id ="moneyLabel">...loading</label>
+    <button id="startButton">あそぶ</button>
+    <img    id="loadingImg" src="./img/loading.gif"></img>
+    <button id="testButton">テスト</button>
+
+    <script>
+
+function countToDoller(n)
+{
+    var msg = Array(n) // empty, empty, ...
+        .fill("💰") // 💰,💰,...
+        .join(""); // "💰 💰" ...
+    return msg;
+};
+
+function ajax(verb, lambda)
+{
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'http://localhost:4000/cointoss/'+verb);
+    xhr.withCredentials = true;
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = function() {
+        var json = JSON.parse(xhr.response)
+        lambda(json, xhr.status);
+    };
+    xhr.send();
+}
+
+function showMessage(req, code, json)
+{
+    var msg =
+    "STATE:" + json.state +" " +
+    "COIN :" + json.coin + " " +
+    "HAND :" + json.hand +" " +
+    "WIN  :" + json.win; +" " 
+
+    var state = json.state;
+
+    var img = state == 'wait'   ? 'img/toWaitt.svg'
+            : state == 'bet'    ? 'img/bet.svg'
+            : state == 'result' ? 'img/game.svg'
+            :                     'img/question.svg'
+
+    var title = json.request + ' : ' + code;
+
+    iziToast.show({timeout: 20000, image:img, position: "bottomRight", title, message: msg,
+    progressBarColor: 'rgb(0, 255, 184)',});
+
+    return null;
+}
+
+function betFunc()
+{
+    ajax('bet', (json ,code) => {
+        showMessage('BET', code, json);
+        moneyLabel.innerText = countToDoller(json.coin);
+        play(json.bet);
+    });
+};
+
+function play(bet)
+{
+    var buttons = {
+        cancel: {
+            text: "表",
+            value: 1,
+            visible: true,
+            className: "",
+            closeModal: true
+        },
+        confirm: {
+            text: "裏",
+            value: 2,
+            visible: true,
+            className: "",
+            closeModal: true
+        }
+    };
+    var swalArg = {
+        ico: "info",
+        title: countToDoller(bet),
+        buttons: buttons,
+        closeOnClickOutside: false
+    };
+
+    swal(swalArg)
+        .then(function (choose) {
+        loadingImg.style.display = "block";
+
+        // 初回プレイ
+        ajax('game', (json ,code) => {
+            
+            showMessage('GAME', code, json);
+
+            loadingImg.style.display = "none";
+            if (json.win!=0) {
+                var title = countToDoller(json.win);
+                var buttons = {
+                    cancel: {
+                        text: "やめる",
+                        value: 1,
+                        visible: true,
+                        className: "",
+                        closeModal: true
+                    },
+                    confirm: {
+                        text: "ダブルアップ",
+                        value: 2,
+                        visible: true,
+                        className: "",
+                        closeModal: true
+                    }
+                };
+                // 当たり演出
+                var swalArg = {
+                    ico: "success",
+                    title: title,
+                    buttons: buttons,
+                    closeOnClickOutside: false
+                };
+
+                swal(swalArg)
+                .then((choose)=>
+                {
+                   if(choose==1)
+                   {
+                        ajax('init', (json ,code) => {
+                            showMessage('GAME', code, json);
+                            moneyLabel.innerText = countToDoller(json.coin);
+                        });
+                   }
+                   else
+                   {
+                       // ダブルアップ
+                        ajax('bet', (json ,code) => {
+                            showMessage('GAME', code, json);
+                            moneyLabel.innerText = countToDoller(json.coin);
+                            play(json.hand);
+                        });                  
+                    } 
+                });
+            }
+            else {
+                // はずれ演出
+                var title = "😭";
+                // 当たり演出
+                var swalArg = {
+                    ico: "error",
+                    title: title,
+                    closeOnClickOutside: false
+                };
+
+                ajax('init', (json ,code) => {
+                    showMessage('GAME', code, json);
+                    moneyLabel.innerText = countToDoller(json.coin);
+                });
+
+                swal(swalArg);
+            }
+        }, 1000);
+    });
+}
+
+function test(){}
+
+window.onload = function () {
+
+    //--
+    var moneyLabel  = document.getElementById("moneyLabel");
+    var loadingImg  = document.getElementById("loadingImg");
+    var startButton = document.getElementById("startButton");
+    var testButton  = document.getElementById("testButton");
+
+    // init
+    loadingImg.style.display = "block";
+    startButton.style.display = "none";
+    testButton.style.display = "none";
+    
+    moneyLabel.innerText = "loading";
+    startButton.onclick  = betFunc;
+    testButton.onclick   = test;
+
+    // サーバー初期化
+    ajax('init', (json ,code) => {
+        loadingImg.style.display = "none";
+        startButton.style.display = "block";
+        //testButton.style.display = "none";
+        showMessage("INIT", code, json);
+        moneyLabel.innerText = countToDoller(json.coin);
+    });
+
+
+};
+
+    </script>
+
+</body>
+</html>
