@@ -18,7 +18,7 @@
     <h1>コイントス</h1>
     <label  id ="moneyLabel">...loading</label>
     <button id="startButton">あそぶ</button>
-    <img    id="loadingImg" src="./img/loading.gif"></img>
+    <img    id="loadingImg" src="./img/gear_anim.svg"></img>
     <button id="testButton">テスト</button>
 
     <script>
@@ -35,7 +35,12 @@ function ajax(verb, lambda)
 {
     var xhr = new XMLHttpRequest();
 
-    xhr.open('POST', 'http://localhost:4000/cointoss/'+verb);
+    var head = 'http://192.168.3.2:4000/';
+    //var head = 'http://192.168.3.5:4000/';
+    //var head = 'http://localhost:4000/';
+    //var head = 'http://13.230.175.124:4000/';
+
+    xhr.open('POST', head + '/cointoss/' + verb);
     xhr.withCredentials = true;
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     xhr.onload = function() {
@@ -48,10 +53,10 @@ function ajax(verb, lambda)
 function showMessage(req, code, json)
 {
     var msg =
-    "STATE:" + json.state +" " +
-    "COIN :" + json.coin + " " +
-    "HAND :" + json.hand +" " +
-    "WIN  :" + json.win; +" " 
+    "S:" + json.state +" " +
+    "C :" + json.coin + " " +
+    "H :" + json.hand +" " +
+    "W  :" + json.win; +" " 
 
     var state = json.state;
 
