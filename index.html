@@ -4,24 +4,82 @@
 </head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-
-<!-- IZITOAST v11.3.0 -->
-<!-- #http://izitoast.marcelodolce.com/ -->
+<link rel="stylesheet" href="./css/base.css"/>
 <link rel="stylesheet" href="https://unpkg.com/izitoast/dist/css/iziToast.min.css"/>
-<script type="text/javascript" src="https://unpkg.com/izitoast/dist/js/iziToast.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/izitoast/dist/js/iziToast.min.js"></script>
 
 <title>coinTossDesign</title>
 <body>
     <h1>コイントス</h1>
-    <label  id ="moneyLabel">...loading</label>
+    <label  id ="moneyLabel">...</label>
     <button id="startButton">あそぶ</button>
     <img    id="loadingImg" src="./img/gear_anim.svg"></img>
     <button id="testButton">テスト</button>
+    <button id="signUpButton">アカウントを作る</button>
+
+
+    <!-- なんでもかんでも index.html に突っ込むのもなあ。。　-->
+    <div id="id01" class="modal">
+        <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+        <form class="modal-content" onsubmit="return false;">
+          <div class="container">
+            <h1>アカウントを作る</h1>
+
+            <hr>
+            <label for="email"><b>Email</b></label>
+            <input id="email" type="text"
+            placeholder="your@email.address" name="email" required>
+      
+            <label for="psw"><b>Password</b></label>
+            <input id="password" type="password"
+            placeholder="Enter Password" name="psw" required>
+      
+            <label for="psw-repeat"><b>Repeat Password</b></label>
+            <input id="repeat" type="password"
+            placeholder="Repeat Password" name="psw-repeat" required>
+      
+            <div class="clearfix">
+              <button type="button"
+              onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">キャンセル</button>
+              <button type="submit"
+              class="signupbtn" onclick="submitSignUp()">ＯＫ</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      
+    
 
     <script>
+
+function submitSignUp()
+{
+    var email    = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+    var repeat   = document.getElementById('repeat').value;
+
+    console.log(email);
+    console.log(password);
+    console.log(repeat);
+
+    //var head = "https://vegas.web-api.link/"
+    var head = "http://192.168.3.6:4000/";
+    var url  = head + 'users';
+
+    let params = new URLSearchParams()
+    params.set('userId', email)
+    params.set('hasedPassword', password)
+    fetch(url, {
+        method: 'POST',
+        credentials: 'include',
+        body: params,
+    })
+
+}
+
+
+var lambdaStack = [];
 
 function countToDoller(n)
 {
@@ -35,10 +93,8 @@ function ajax(verb, lambda)
 {
     var xhr = new XMLHttpRequest();
 
-    var head = 'http://192.168.3.2:4000/';
-    //var head = 'http://192.168.3.5:4000/';
-    //var head = 'http://localhost:4000/';
-    //var head = 'http://13.230.175.124:4000/';
+
+    var head = "https://vegas.web-api.link/"
 
     xhr.open('POST', head + '/cointoss/' + verb);
     xhr.withCredentials = true;
@@ -53,10 +109,10 @@ function ajax(verb, lambda)
 function showMessage(req, code, json)
 {
     var msg =
-    "S:" + json.state +" " +
-    "C :" + json.coin + " " +
-    "H :" + json.hand +" " +
-    "W  :" + json.win; +" " 
+    "S :" + json.state + " " +
+    "C :" + json.coin  + " " +
+    "H :" + json.hand  + " " +
+    "W :" + json.win;  + " " 
 
     var state = json.state;
 
@@ -81,6 +137,11 @@ function betFunc()
         play(json.bet);
     });
 };
+
+// 見通しが良くないなあ。
+// 常に何かを待っている状態で、
+// init ->
+// 
 
 function play(bet)
 {
@@ -108,7 +169,7 @@ function play(bet)
     };
 
     swal(swalArg)
-        .then(function (choose) {
+    .then(function (choose) {
         loadingImg.style.display = "block";
 
         // 初回プレイ
@@ -190,10 +251,11 @@ function test(){}
 window.onload = function () {
 
     //--
-    var moneyLabel  = document.getElementById("moneyLabel");
-    var loadingImg  = document.getElementById("loadingImg");
-    var startButton = document.getElementById("startButton");
-    var testButton  = document.getElementById("testButton");
+    var moneyLabel   = document.getElementById("moneyLabel");
+    var loadingImg   = document.getElementById("loadingImg");
+    var startButton  = document.getElementById("startButton");
+    var testButton   = document.getElementById("testButton");
+    var signUpButton = document.getElementById("signUpButton");
 
     // init
     loadingImg.style.display = "block";
@@ -203,6 +265,11 @@ window.onload = function () {
     moneyLabel.innerText = "loading";
     startButton.onclick  = betFunc;
     testButton.onclick   = test;
+    signUpButton.onclick = function ()
+    {
+        document.getElementById('id01').style.display='block';
+        document.getElementById('id01').style.width="auto";
+    }
 
     // サーバー初期化
     ajax('init', (json ,code) => {
@@ -212,8 +279,6 @@ window.onload = function () {
         showMessage("INIT", code, json);
         moneyLabel.innerText = countToDoller(json.coin);
     });
-
-
 };
 
     </script>

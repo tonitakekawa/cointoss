@@ -35,8 +35,8 @@ gulp.task('webserver', function ()
 {
     gulp.src('.')
         .pipe(webserver({
-            host: '0.0.0.0',
-            port: 9999,
+            host: 'localhost',
+            port: 8000,
             livereload: true
        }));
 });

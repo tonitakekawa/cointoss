@@ -1,77 +1,108 @@
-﻿@charset "UTF-8";
-/*base.css */
-
-/*Base setting_____________________________________*/
-body {
-	color:#666;
-	font:14px/1.6 Century Gothic,'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
-	overflow-x:hidden;
-	/*古い構文（old Safari用）*/
-	background:-webkit-linear-gradient(left top, #eedad9 25%, #b5b2d4 70%, #b09cbf 100%) fixed #eedad9;
-	/*新しい構文*/
-	background:linear-gradient(to bottom right, #d4ebf0 25%, #b5b2d4 70%, #b09cbf 100%) fixed #eedad9}
-
-/*header footer*/
-header, footer {
-	width:100%;
-	z-index:1;
-	position:fixed;
-	background: rgba(0,0,0,.5);
-	color:#fff;}
-footer {
-	bottom:0;	
-	text-align: center;
-	font-size:85%;
-	padding:10px 0 8px}
-footer span {font-family:Century Gothic, sans-serif}
-/*header menu_____________________________________*/
-header h1 {
-	font-size:30px;
-	line-height:1;
-	padding:10px 15px}
-
-/*layout_____________________________________*/
-/*wrap*/
-#wrap {/*for table*/
-	height:100%;/*for old Safari*/
-	height:100vh;
-	width:100%;
-	display:table}
-#wrap:not(:target) {height:100%\9} /* IE9,10 */
-.cellBox {display:table-cell;vertical-align:middle}
-.cellBoxIn {width:90%; max-width:1200px; margin:auto; text-align:center}/*for margin(left,right)*/
-.box {
-	display:inline-block;
-	margin:2em;
-	box-sizing:border-box;
-	width:260px;
-	margin:25px;
-	padding:10px;
-	box-shadow: 1px 1px 2px #ccc;
-	border-radius:15px;
-	background:#fff}
-.box img {width:100%; height:auto}
-.box h1 {
-	margin:10px 0;
-	line-height:1;
-	font-size:120%}
-.box p {text-align:left}
-p.memo a {color:#ff6}
-p.memo a:hover {color:#fff}
-
-/*Media-queries_____________________________________*/
-@media screen and (max-height: 640px) {
-html {-webkit-text-size-adjust:100%}/*disable webkit text size adjust (for iPhone)*/
-a img:hover {opacity:1}
-header h1 {font-size:20px}
-.cellBox {padding:40px 0}
-footer {font-size:80%; padding:5px}
+﻿body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box}
+/* Full-width input fields */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
 }
-/*smaller than 640-----------------------------*/
-@media screen and (max-width: 640px) {
-html {-webkit-text-size-adjust:100%}/*disable webkit text size adjust (for iPhone)*/
-a img:hover {opacity:1}
-header h1 {font-size:20px}
-.cellBox {padding:40px 0}
-footer {font-size:80%; padding:5px}
+
+/* Add a background color when the inputs get focus */
+input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+button:hover {
+    opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+    padding: 14px 20px;
+    background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .signupbtn {
+  float: left;
+  width: 50%;
+}
+
+/* Add padding to container elements */
+.container {
+    padding: 16px;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: #474e5d;
+    padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+ 
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+    color: #f44336;
+    cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+    .cancelbtn, .signupbtn {
+       width: 100%;
+    }
 }
