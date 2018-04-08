@@ -53,31 +53,59 @@
 
     <script>
 
+//var head = "http://192.168.3.6:4000/";
+var head = "http://localhost:4000/";
+
 function submitSignUp()
 {
     var email    = document.getElementById('email').value;
     var password = document.getElementById('password').value;
     var repeat   = document.getElementById('repeat').value;
+    
+    requestJson =
+    {
+      "user":
+      {
+        "userId": email,
+        "hashedPassword": password
+      }
+    };
 
-    console.log(email);
-    console.log(password);
-    console.log(repeat);
+    var url = head + "users";
 
-    //var head = "https://vegas.web-api.link/"
-    var head = "http://192.168.3.6:4000/";
-    var url  = head + 'users';
+    var lambda = (responseJson, code) =>
+    {
+        var title = url;
+        var msg = JSON.stringify(responseJson);
+        iziToast.show({timeout: 20000, position: "bottomRight", title, message: msg,
+    progressBarColor: 'rgb(0, 255, 184)',});
 
-    let params = new URLSearchParams()
-    params.set('userId', email)
-    params.set('hasedPassword', password)
-    fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        body: params,
-    })
+        if(responseJson.data.result == true)
+        {
+            var swalArg =
+            {
+                ico: "info",
+                title: "正常に登録されました",
+                closeOnClickOutside: false
+            };
 
+            swal(swalArg)
+        }
+        else
+        {
+            var swalArg =
+            {
+                ico: "error",
+                title: "登録されませんでした",
+                closeOnClickOutside: false
+            };
+
+            swal(swalArg)
+        }
+    }
+
+    ajax(url, lambda, requestJson);
 }
-
 
 var lambdaStack = [];
 
@@ -89,21 +117,23 @@ function countToDoller(n)
     return msg;
 };
 
-function ajax(verb, lambda)
+function ajax(url, lambda, json={})
 {
-    var xhr = new XMLHttpRequest();
-
-
-    var head = "https://vegas.web-api.link/"
-
-    xhr.open('POST', head + '/cointoss/' + verb);
-    xhr.withCredentials = true;
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function() {
-        var json = JSON.parse(xhr.response)
-        lambda(json, xhr.status);
-    };
-    xhr.send();
+    //var url = head + 'cointoss/' + verb;
+    
+    fetch(url, {
+        method : 'POST',
+        credentials : "include",
+        body        : JSON.stringify(json),
+        headers : new Headers({ "Content-type" : "application/json" })
+    }).then(response => response.text())
+    .then(text => 
+    {
+        var json = JSON.parse(text)
+        lambda(json, 200);
+        console.log(text)
+    }
+    );
 }
 
 function showMessage(req, code, json)
@@ -131,7 +161,9 @@ function showMessage(req, code, json)
 
 function betFunc()
 {
-    ajax('bet', (json ,code) => {
+    var url = head + 'cointoss/bet';
+
+    ajax(url, (json ,code) => {
         showMessage('BET', code, json);
         moneyLabel.innerText = countToDoller(json.coin);
         play(json.bet);
@@ -172,8 +204,10 @@ function play(bet)
     .then(function (choose) {
         loadingImg.style.display = "block";
 
+        var url = head + 'cointoss/game';
+
         // 初回プレイ
-        ajax('game', (json ,code) => {
+        ajax(url, (json ,code) => {
             
             showMessage('GAME', code, json);
 
@@ -209,15 +243,18 @@ function play(bet)
                 {
                    if(choose==1)
                    {
-                        ajax('init', (json ,code) => {
+                        var url = head + 'cointoss/init';
+
+                        ajax(url, (json ,code) => {
                             showMessage('GAME', code, json);
                             moneyLabel.innerText = countToDoller(json.coin);
                         });
                    }
                    else
                    {
-                       // ダブルアップ
-                        ajax('bet', (json ,code) => {
+                        var url = head + 'cointoss/bet';
+                        // ダブルアップ
+                        ajax(url, (json ,code) => {
                             showMessage('GAME', code, json);
                             moneyLabel.innerText = countToDoller(json.coin);
                             play(json.hand);
@@ -235,7 +272,9 @@ function play(bet)
                     closeOnClickOutside: false
                 };
 
-                ajax('init', (json ,code) => {
+                var url = head + 'cointoss/init';
+
+                ajax(url, (json ,code) => {
                     showMessage('GAME', code, json);
                     moneyLabel.innerText = countToDoller(json.coin);
                 });
@@ -272,7 +311,9 @@ window.onload = function () {
     }
 
     // サーバー初期化
-    ajax('init', (json ,code) => {
+    var url =  head + 'cointoss/init';
+
+    ajax(url, (json ,code) => {
         loadingImg.style.display = "none";
         startButton.style.display = "block";
         //testButton.style.display = "none";
