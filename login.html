@@ -9,23 +9,15 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="https://unpkg.com/izitoast/dist/js/iziToast.min.js"></script>
 
-<title>coinTossDesign</title>
+<title>ニューベガス</title>
 <body>
-    <h1>コイントス</h1>
-    <label  id ="moneyLabel">...</label>
-    <button id="startButton">あそぶ</button>
-    <img    id="loadingImg" src="./img/gear_anim.svg"></img>
-    <button id="testButton">バージョンチェック</button>
-    <button id="signUpButton">アカウントを作る</button>
-    <button id="loginButton">ログイン</button>
-
 
     <!-- なんでもかんでも index.html に突っ込むのもなあ。。　-->
     <div id="id01" class="modal">
         <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
         <form class="modal-content" onsubmit="return false;">
           <div class="container">
-            <h1>アカウントを作る</h1>
+            <h1>ログイン</h1>
 
             <hr>
             <label for="email"><b>Email</b></label>
@@ -36,15 +28,11 @@
             <input id="password" type="password"
             placeholder="Enter Password" name="psw" required>
       
-            <label for="psw-repeat"><b>Repeat Password</b></label>
-            <input id="repeat" type="password"
-            placeholder="Repeat Password" name="psw-repeat" required>
-      
             <div class="clearfix">
               <button type="button"
               onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">キャンセル</button>
               <button type="submit"
-              class="signupbtn" onclick="submitSignUp()">ＯＫ</button>
+              class="signupbtn" onclick="submitLogIn()">ＯＫ</button>
             </div>
           </div>
         </form>
@@ -52,13 +40,8 @@
       
     
 
-    <script src="./js/client.js"></script>
     <script>
-        window.onload = onloadIndex;
-        iziToast.show({
-            title: 'onload',
-            message: 'onloadIndex'
-        });
+
     </script>
 
 </body>
