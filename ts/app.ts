@@ -235,12 +235,26 @@ function submitLogIn()
             progressBarColor: 'rgb(0, 255, 184)'
         });
 
-        //if(responseJson.data.result == true)
+        if(responseJson.result == true)
         {
             var swalArg =
             {
                 ico: "info",
-                title: "ログインしました",
+                title: responseJson.message,
+                closeOnClickOutside: false
+            };
+
+            swal(swalArg)
+            .then(()=>{
+                window.location.href = './index.html';
+            });
+        }
+        else
+        {
+            var swalArg =
+            {
+                ico: "info",
+                title: responseJson.message,
                 closeOnClickOutside: false
             };
 
@@ -321,7 +335,7 @@ function onloadLogin()
 
 function versionTest()
 {
-    var clientVersion = "new-vegas-client-0.0.0-develop~";
+    var clientVersion = "new-vegas-client-0.0.0-develop";
 
     var versionUrl =  head + 'version';
 
@@ -373,6 +387,7 @@ function onloadIndex()
     var startButton  = document.getElementById("startButton");
     var testButton   = document.getElementById("testButton");
     var signUpButton = document.getElementById("signUpButton");
+    var loginButton  = document.getElementById("loginButton");
 
     // init
     loadingImg.style.display = "block";
@@ -386,6 +401,11 @@ function onloadIndex()
     {
         document.getElementById('id01').style.display='block';
         document.getElementById('id01').style.width="auto";
+    }
+
+    loginButton.onclick = function()
+    {
+        window.location.href = './login.html';
     }
 
     // サーバー初期化

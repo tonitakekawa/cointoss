@@ -11,8 +11,6 @@
 
 <title>ニューベガス</title>
 <body>
-
-    <!-- なんでもかんでも index.html に突っ込むのもなあ。。　-->
     <div id="id01" class="modal">
         <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
         <form class="modal-content" onsubmit="return false;">
@@ -37,12 +35,15 @@
           </div>
         </form>
       </div>
-      
-    
 
-    <script>
-
-    </script>
+      <script src="./js/client.js"></script>
+      <script>
+          window.onload = onloadLogin;
+          iziToast.show({
+              title: 'onload',
+              message: 'onloadIndex'
+          });
+      </script>
 
 </body>
 </html>

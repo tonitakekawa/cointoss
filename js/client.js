@@ -189,11 +189,21 @@ function submitLogIn() {
             message: msg,
             progressBarColor: 'rgb(0, 255, 184)'
         });
-        //if(responseJson.data.result == true)
-        {
+        if (responseJson.result == true) {
             var swalArg = {
                 ico: "info",
-                title: "ログインしました",
+                title: responseJson.message,
+                closeOnClickOutside: false
+            };
+            swal(swalArg)
+                .then(function () {
+                window.location.href = './index.html';
+            });
+        }
+        else {
+            var swalArg = {
+                ico: "info",
+                title: responseJson.message,
                 closeOnClickOutside: false
             };
             swal(swalArg);
@@ -254,7 +264,7 @@ function onloadLogin() {
 }
 ;
 function versionTest() {
-    var clientVersion = "new-vegas-client-0.0.0-develop~";
+    var clientVersion = "new-vegas-client-0.0.0-develop";
     var versionUrl = head + 'version';
     ajax(versionUrl, function (json, code) {
         var arg = {};
@@ -294,6 +304,7 @@ function onloadIndex() {
     var startButton = document.getElementById("startButton");
     var testButton = document.getElementById("testButton");
     var signUpButton = document.getElementById("signUpButton");
+    var loginButton = document.getElementById("loginButton");
     // init
     loadingImg.style.display = "block";
     startButton.style.display = "none";
@@ -304,6 +315,9 @@ function onloadIndex() {
     signUpButton.onclick = function () {
         document.getElementById('id01').style.display = 'block';
         document.getElementById('id01').style.width = "auto";
+    };
+    loginButton.onclick = function () {
+        window.location.href = './login.html';
     };
     // サーバー初期化
     var url = head + 'cointoss/init';
